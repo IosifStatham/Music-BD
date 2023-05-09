@@ -27,7 +27,8 @@ groupID integer references Musical_group(GroupID)
 
 create table if not exists Music (
 Title VARCHAR (50) not null primary key,
-Albom VARCHAR (30) not null references Albom(AlbomTitle)
+Albom VARCHAR (30) not null references Albom(AlbomTitle),
+Duration NUMERIC not null
 );
 
 create table if not exists Compilation (
