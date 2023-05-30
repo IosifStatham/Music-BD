@@ -45,116 +45,66 @@ titleMusic INTEGER references Music(IDMusic),
 compilation INTEGER references Compilation(IDCompilation)
 );
 
-insert into Genre_of_music(name_of_genre)
-values ('пост-панк');
-insert into Musical_group(name)
-values ('Улица восток');
-insert into GroupGenre (musicalgroupid, genreofmusicid)
-values (1, 1);
+insert into Genre_of_music(name_of_genre) values
+ ('пост-панк'),
+ ('Хип-Хоп'),
+ ('прогрессив-хаус'),
+ ('рок');
 
-insert into Genre_of_music(name_of_genre)
-values ('Хип-Хоп');
-insert into Musical_group(name)
-values ('Burito');
-insert into GroupGenre (musicalgroupid, genreofmusicid)
-values (2, 2);
+insert into Musical_group(name) values 
+ ('Улица восток'),
+ ('Burito'),
+ ('Alan Walker'),
+ ('The Rasmus');
 
-insert into Genre_of_music(name_of_genre)
-values ('прогрессив-хаус');
-insert into Musical_group(name)
-values ('Alan Walker');
-insert into GroupGenre (musicalgroupid, genreofmusicid)
-values (3, 3);
+insert into GroupGenre (musicalgroupid, genreofmusicid) values
+ (1, 1),
+ (2, 2),
+ (3, 3),
+ (4, 4);
 
-insert into Genre_of_music(name_of_genre)
-values ('рок');
-insert into Musical_group(name)
-values ('The Rasmus');
-insert into GroupGenre (musicalgroupid, genreofmusicid)
-values (4, 4);
+insert into albom (albomtitle, yearofalbom) values
+('Запомню', '2021'),
+('Она', '2022'),
+('Catch Me If You Can', '2022'),
+('Catch Me If You Can2', '2020'),
+('Livin in a World Without You', '2008');
 
+insert into GroupAlbom (albomid, groupid) values
+ (1, 1),
+ (2, 2),
+ (3, 3),
+ (12, 2),
+ (4, 4);
+ 
+insert into music (title, albom, duration) values
+('Запомню', 1, 183),
+('Она', 2, 196),
+('Catch Me If You Can', 3, 151),
+('Livin in a World Without You', 4, 230),
+('You Got It Wrong', 4, 195),
+('Livin in a World Without You (extended)', 4, 250);
 
-insert into albom (albomtitle, yearofalbom)
-values ('Запомню', '2021');
+insert into Compilation (namecompilation, yearcompilation) values 
+('В дорогу', 2022),
+('В долгую дорогу', 2023),
+('Под настроение', 2023),
+('По одному треку из каждого альбома', 2023);
 
-insert into albom (albomtitle, yearofalbom)
-values ('Она', '2022');
-
-insert into albom (albomtitle, yearofalbom)
-values ('Catch Me If You Can', '2022');
-
-insert into albom (albomtitle, yearofalbom)
-values ('Livin in a World Without You', '2008');
-
-
-
-insert into GroupAlbom (albomid, groupid)
-values (1, 1);
-
-insert into GroupAlbom (albomid, groupid)
-values (2, 2);
-
-insert into GroupAlbom (albomid, groupid)
-values (3, 3);
-
-insert into GroupAlbom (albomid, groupid)
-values (4, 4);
-
-
-insert into music (title, albom, duration)
-values ('Запомню', 1, 183);
-
-insert into music (title, albom, duration)
-values ('Она', 2, 196);
-
-insert into music (title, albom, duration)
-values ('Catch Me If You Can', 3, 151);
-
-insert into music (title, albom, duration)
-values ('Livin in a World Without You', 4, 230);
-insert into music (title, albom, duration)
-values ('You Got It Wrong', 4, 195);
-insert into music (title, albom, duration)
-values ('Livin in a World Without You (extended)', 4, 250);
-
-insert into Compilation (namecompilation, yearcompilation)
-values ('В дорогу', 2022);
-
-insert into Compilation (namecompilation, yearcompilation)
-values ('В долгую дорогу', 2023);
-
-insert into Compilation (namecompilation, yearcompilation)
-values ('Под настроение', 2023);
-
-insert into Compilation (namecompilation, yearcompilation)
-values ('По одному треку из каждого альбома', 2023);
-
-insert into compilationmusic (titlemusic, compilation)
-values (3 , 1);
-insert into compilationmusic (titlemusic, compilation)
-values (4 , 1);
-insert into compilationmusic (titlemusic, compilation)
-values (5 , 1);
-
-insert into compilationmusic (titlemusic, compilation)
-values (6 , 2);
-
-insert into compilationmusic (titlemusic, compilation)
-values (1 , 3);
-insert into compilationmusic (titlemusic, compilation)
-values (2 , 3);
-
-insert into compilationmusic (titlemusic, compilation)
-values (1 , 4);
-insert into compilationmusic (titlemusic, compilation)
-values (2 , 4);
-insert into compilationmusic (titlemusic, compilation)
-values (3 , 4);
-insert into compilationmusic (titlemusic, compilation)
-values (4 , 4);
+insert into compilationmusic (titlemusic, compilation) values 
+(3 , 1),
+(4 , 1),
+(5 , 1),
+(6 , 2),
+(1 , 3),
+(2 , 3),
+(1 , 4),
+(2 , 4),
+(3 , 4),
+(4 , 4);
 
 select title, duration from music
-order by duration desc limit 1;
+where duration = (select max(duration) from music);
 
 select title, duration from music
 where duration >= 210;
@@ -165,17 +115,23 @@ where yearcompilation between 2018 and 2020;
 select name from musical_group
 where name not like '% %';
 
-select title from music
-where title like '%мой%' or title like '%my%';
+select distinct title from music
+where title ILIKE 'мой %' 
+or title ILIKE '% мой' 
+or title ILIKE '% мой %' 
+or title ILIKE 'мой'
+or title ILIKE '% my' 
+or title ILIKE '% my %' 
+or title ILIKE 'my'
+or title ILIKE 'my %';
 
 select genreofmusicid, count(musicalgroupid) from groupgenre
 group by genreofmusicid
 order by count(musicalgroupid) desc;
 
-select count(title), yearofalbom from music
+select count(title) from music
 join albom on music.albom = albom.idalbom
-where yearofalbom between 2018 and 2020
-group by yearofalbom;
+where yearofalbom between 2018 and 2020;
 
 select avg(duration), albom from music
 group by albom;
@@ -185,6 +141,12 @@ join groupalbom on groupalbom.groupid = musical_group.groupid
 join albom on groupalbom.albomid = albom.idalbom
 where not yearofalbom = 2020;
 
+select name from musical_group
+where groupid not in (
+select groupid from groupalbom
+join albom on groupalbom.albomid = albom.idalbom
+where yearofalbom = 2020);
+
 select namecompilation, name from compilation
 join compilationmusic on compilationmusic.compilation = compilation.idcompilation 
 join music on compilationmusic.titlemusic = music.idmusic 
@@ -192,3 +154,5 @@ join albom on music.albom = albom.idalbom
 join groupalbom on groupalbom.albomid  = albom.idalbom 
 join musical_group on groupalbom.groupid  = musical_group.groupid
 where name = 'Alan Walker';
+
+
